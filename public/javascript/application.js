@@ -38,7 +38,7 @@ $(function() {
   });
 
 
-  // TODO: Weather Information
+  // Weather Information
   $('.city-container').on('click', '.city', function(e){
     e.preventDefault();
     var latlon = $(this).data("latlon");
@@ -51,7 +51,22 @@ $(function() {
       dataType: 'jsonp',
       jsonpCallback: 'cb'
     }).then(function successCityWeatherInfo(cityInfo){
-      console.log(cityInfo.current_observation);
+      // console.log(cityInfo.current_observation);
+      $(".weather-container").empty();
+      var cityname = cityInfo.current_observation.display_location.city;
+      var countryname = cityInfo.current_observation.display_location.country;
+      var temperature_string = cityInfo.current_observation.temperature_string;
+      var weather = cityInfo.current_observation.weather;
+      var feels_like_c = cityInfo.current_observation.feelslike_c;
+      var last_obs_time = cityInfo.current_observation.observation_time;
+
+      $("<h2>").text("City of " + cityname + "," + countryname).appendTo(".weather-container");
+      $("<h3>").text(last_obs_time).appendTo(".weather-container");
+      $("<p>").text("The weather is " + weather).appendTo(".weather-container");
+      $("<p>").text("It feels like " + feels_like_c + " degree celcius").appendTo(".weather-container");
+      $("<p>").text("Real temperature now is " + temperature_string).appendTo(".weather-container");
+
+      //console.log(temperature_string);
     }, function failCityWeatherInfo(){
       console.log('fail info');
     });
