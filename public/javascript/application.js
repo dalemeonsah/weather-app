@@ -1,4 +1,5 @@
 $(function() {
+  // Search cities
   $('#search').on('keypress', function(e){
     var p = e.which;
     // upon enter key is pressed
@@ -21,11 +22,42 @@ $(function() {
         citylist.empty();
         for(var city in cityResults){
           var cityname = cityResults[city].name;
-          $("<li>").text(cityname).appendTo(citylist);
+          var latitude = cityResults[city].lat;
+          var longtitude = cityResults[city].lon;
+          var latlon = latitude + ',' + longtitude;
+          // console.log(cityname);
+          // console.log(latitude + ',' +longtitude);
+          var a = $("<a>").attr('href', '#').attr('data-latlon', latlon).addClass('city').text(cityname);
+          $("<li>").append(a).appendTo(citylist);
         }
       }, function failSearch(){
+        alert('Fail to search');
         console.log('fail');
       });
     }
-  })
+  });
+
+
+  // TODO: Weather Information
+  $('.city-container').on('click', '.city', function(e){
+    e.preventDefault();
+    var latlon = $(this).data("latlon");
+    //console.log(latlon);
+
+    var apiKey = "051b0b48bf828d17";
+    $.ajax({
+      url: "http://api.wunderground.com/api/" + apiKey + "/geolookup/conditions/forecast/q/" + latlon + '.json',
+      type: 'GET',
+      dataType: 'jsonp',
+      jsonpCallback: 'cb'
+    }).then(function successCityWeatherInfo(cityInfo){
+      console.log(cityInfo.current_observation);
+    }, function failCityWeatherInfo(){
+      console.log('fail info');
+    });
+
+
+
+
+  });
 });
